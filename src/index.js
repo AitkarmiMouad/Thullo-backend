@@ -1,84 +1,31 @@
-require('dotenv').config();
-const { ApolloServer , PubSub } = require('apollo-server-express');
-const { config } = require('dotenv');
 const app = require('./config/express');
+const { port } = require('./config/config')
+const mongoose = require('mongoose');
+const connectDB = require('./config/dbConn');
+const { ApolloServer } = require('apollo-server-express')
+const { typeDefs } = require('./graphql/typeDefs')
+const resolvers = require('./graphql/resolvers')
 
-const PORT = process.env.PORT || 4000
+const PORT = port || 4000
 
-// const pubsub = new PubSub();
-// const server = new ApolloServer({ typeDefs, resolvers , csrfPrevention: true , context: ({ req }) => ({ req, pubsub }) });
-// server.applyMiddleware({ app });
+// Connect to MongoDB
+connectDB();
 
-app.listen({ port: PORT }, () => {
+// apolloServer - Graphql
+async function startApolloServer(typeDefs, resolvers) {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+    cache: 'bounded',
+  });
+  await server.start();
+  server.applyMiddleware({ app });
+}
+startApolloServer(typeDefs, resolvers)
 
-  console.log(`🚀 Server ready at http://localhost:4000`);
-
-})
-
-
-// const mongoose = require('mongoose');
-// const app = require('./app');
-// const config = require('./config/config');
-// const logger = require('./config/logger');
-
-// let server;
-// mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-//   logger.info('Connected to MongoDB');
-//   server = app.listen(config.port, () => {
-//     logger.info(`Listening to port ${config.port}`);
-//   });
-// });
-
-// const exitHandler = () => {
-//   if (server) {
-//     server.close(() => {
-//       logger.info('Server closed');
-//       process.exit(1);
-//     });
-//   } else {
-//     process.exit(1);
-//   }
-// };
-
-// const unexpectedErrorHandler = (error) => {
-//   logger.error(error);
-//   exitHandler();
-// };
-
-// process.on('uncaughtException', unexpectedErrorHandler);
-// process.on('unhandledRejection', unexpectedErrorHandler);
-
-// process.on('SIGTERM', () => {
-//   logger.info('SIGTERM received');
-//   if (server) {
-//     server.close();
-//   }
-// });
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////
-
-
-// const { port, env } = require('./config/vars');
-// const logger = require('./config/logger');
-// const app = require('./config/express');
-// const mongoose = require('./config/mongoose');
-
-// // open mongoose connection
-// mongoose.connect();
-
-// // listen to requests
-// app.listen(port, () => logger.info(`server started on port ${port} (${env})`));
-
-// /**
-// * Exports express
-// * @public
-// */
-// module.exports = app;
-
-
+// Connect to mongodb then start express server
+mongoose.connection.once('open', () => {
+  console.log('🔗 Connected to MongoDB');
+  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+});

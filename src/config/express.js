@@ -45,6 +45,8 @@ app.use(helmet());
 app.use(credentials);
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors(corsOptions));
+
+
 // enable authentication
 // app.use(passport.initialize());
 // passport.use('jwt', strategies.jwt);
