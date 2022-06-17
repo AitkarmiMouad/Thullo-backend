@@ -1,0 +1,15 @@
+const { config } = require("dotenv");
+
+// import .env variables
+config();
+
+module.exports = {
+  env: process.env.NODE_ENV,
+  port: process.env.PORT,
+  jwtSecret: process.env.JWT_SECRET,
+  jwtExpirationInterval: process.env.JWT_EXPIRATION_MINUTES,
+  mongo: {
+    uri: process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TESTS : process.env.MONGO_URI,
+  },
+  isDev: process.env.NODE_ENV === 'development' ? 1 : 0,
+};
