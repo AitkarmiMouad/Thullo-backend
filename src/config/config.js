@@ -8,8 +8,8 @@ module.exports = {
   port: process.env.PORT,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-  accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION_MINUTES,
-  refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION_MINUTES,
+  accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION,
+  refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION,
   mongoURL: process.env.MONGODB_URL,
   isDev: process.env.NODE_ENV === 'development' ? 1 : 0,
 };

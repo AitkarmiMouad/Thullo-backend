@@ -11,6 +11,7 @@ const corsOptions = require('./corsOptions');
 const credentials = require('../middlewares/credentials')
 const morgan = require('./morgan');
 const errorHandler = require('../middlewares/errorHandler');
+const { isDev } = require('./config');
 // const passport = require('passport');
 // const strategies = require('./passport');
 
@@ -38,7 +39,10 @@ app.use(compression());
 // in places where the client doesn't support it
 app.use(methodOverride());
 // secure apps by setting various HTTP headers
-app.use(helmet());
+app.use(helmet({
+  crossOriginEmbedderPolicy: !isDev,
+  contentSecurityPolicy: !isDev,
+}));
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement

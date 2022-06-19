@@ -16,6 +16,7 @@ async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: (request) => { return { request } },
     csrfPrevention: true,
     cache: 'bounded',
   });
