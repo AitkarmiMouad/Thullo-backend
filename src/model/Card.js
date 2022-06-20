@@ -13,7 +13,7 @@ const cardSchema = new Schema({
   description: String,
   members: {
     type: [{
-      id: String,
+      _id: String,
       role: String,
     }],
     required: true
@@ -25,12 +25,12 @@ const cardSchema = new Schema({
   },
   labels: {
     type: [{
-      id: String,
+      _id: String,
     }],
   },
   attachements: {
     type: [{
-      id: String,
+      _id: String,
       attachementUrl: {
         type: String,
         required: true
@@ -45,7 +45,7 @@ const cardSchema = new Schema({
   },
   comments: {
     type: [{
-      id: {
+      _id: {
         type: String,
         required: true
       },

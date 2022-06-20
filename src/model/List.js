@@ -12,7 +12,7 @@ const listSchema = new Schema({
   },
   cards: {
     type: [{
-      id: String,
+      _id: String,
     }],
   },
 })

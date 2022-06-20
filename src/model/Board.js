@@ -18,14 +18,14 @@ const boardSchema = new Schema({
   description: String,
   members: {
     type: [{
-      id: String,
+      _id: String,
       role: String,
     }],
     required: true
   },
   list: {
     type: [{
-      id: String,
+      _id: String,
     }],
   },
   createdAt: {

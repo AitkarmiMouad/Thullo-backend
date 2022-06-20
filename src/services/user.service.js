@@ -32,10 +32,38 @@ const createUser = async (payload) => {
   }
 }
 
+const getUserFromEmail = async (email) => {
+  const user = await User.findOne({ email: email }).exec()
+  return user
+}
+
+const updateUser = async (payload) => {
+  const { _id, firstName, lastName, pictureUrl, bio, phone, email, password } = payload
+  try {
+    
+    const foundUser = await User.findOne({ _id: _id }).exec();
+    
+    firstName ? foundBoard.firstName = firstName : '';
+    lastName ? foundBoard.lastName = lastName : ''
+    pictureUrl ? foundBoard.pictureUrl = pictureUrl : ''
+    bio ? foundBoard.bio = bio : ''
+    phone ? foundBoard.phone = phone : ''
+    email ? foundBoard.email = email : ''
+    password ? foundBoard.password = password : ''
+
+    const result = await foundUser.save();
+
+    return result
+
+  } catch (err) {
+    throw new ApolloError(err.message, 'INTERNAL_SERVER_ERROR');
+  }
+}
+
 
 // const verifyRoles = (...allowedRoles) => {
-//   return (req, res, next) => {
-//     if (!req?.roles) return res.sendStatus(401);
+  //   return (req, res, next) => {
+    //     if (!req?.roles) return res.sendStatus(401);
 //     const rolesArray = [...allowedRoles];
 //     const result = req.roles.map(role => rolesArray.includes(role)).find(val => val === true);
 //     if (!result) return res.sendStatus(401);
@@ -45,11 +73,11 @@ const createUser = async (payload) => {
 
 module.exports = {
   createUser,
+  getUserFromEmail,
+  updateUser
   // queryUsers,
   // getUserById,
-  // getUserByEmail,
   // updateUserById,
-  // deleteUserById,
   // verifyRoles,
   // resetPassword,
 };

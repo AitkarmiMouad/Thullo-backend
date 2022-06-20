@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/config')
+const { ApolloError } = require('apollo-server-errors')
 
 const generateAccessToken = (user) => {
   // create access token
@@ -25,47 +26,26 @@ const generateRefreshToken = (user) => {
   return refreshToken;
 }
 
-
-
 // gonna return 0 if invalid or the fullName if valid
 // type must be access access or refresh
-const verifyToken = (token, type) => {
-  // const authHeader = req.headers.authorization || req.headers.Authorization;
-  // if (!authHeader?.startsWith('Bearer ')) return res.sendStatus(401);
-  // const token = authHeader.split(' ')[1];
-  // console.log(token)
-  // jwt.verify(
-  //   token,
-  //   type === 'access' ? config.accessTokenSecret : config.refreshTokenSecret,
-  //   (err, decoded) => {
-  //     if (err) return 0 //invalid token
-  //     return decoded.UserInfo.fullName
-  //   }
-  // );
-}
-
-// Is refreshToken in db?
-const tokenExist = (token) => {
-
-}
-
-
-// save Token in user
-const saveToken = (token,userId) => {
-
-}
-
-// delete Token from user
-const deleteToken = (token,userId) => {
-
+const verifyToken = (req) => {
+  if (!req.cookies.jwt) throw new ApolloError('FORBIDDEN')
+  const token = req.cookies.jwt
+  let email;
+  jwt.verify(
+    token,
+    config.refreshTokenSecret,
+    (err, decoded) => {
+      if (err) throw new ApolloError('FORBIDDEN')//invalid token
+      email = decoded.email
+    }
+  );
+  return email
 }
 
 
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
-  saveToken,
   verifyToken,
-  tokenExist,
-  deleteToken
 };
