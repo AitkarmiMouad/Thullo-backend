@@ -1,7 +1,8 @@
+const Board = require('../../model/Board');
 const { handleLogin, handleLogout, handleRefresh } = require('../../services/auth.service');
 const { createBoard, updateBoard, deleteBoard } = require('../../services/board.service');
 const { verifyToken } = require('../../services/token.service');
-const { createUser, getUserFromEmail, updateUser } = require('../../services/user.service')
+const { createUser, getUserFromEmail, updateUser, verifyRoles } = require('../../services/user.service')
 
 exports.Mutation = {
   addUser: async (parent, { input }, { request }) => {
@@ -20,12 +21,18 @@ exports.Mutation = {
     return board
   },
   updateBoard: async (parent, { input }, { request }) => {
-    verifyToken(request.req)
+    const email = verifyToken(request.req)
+    const user = await getUserFromEmail(email)
+    const foundBoard = await Board.findOne({ _id: input._id }).exec()
+    verifyRoles(user._id, foundBoard, ['admin'])
     const board = await updateBoard(input)
     return board
   },
   deleteBoard: async (parent, { id }, { request }) => {
     verifyToken(request.req)
+    const user = await getUserFromEmail(email)
+    const foundBoard = await Board.findOne({ _id: _id }).exec()
+    verifyRoles(user._id, foundBoard, ['admin'])
     const board = await deleteBoard(id)
     return board
   },

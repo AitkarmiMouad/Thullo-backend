@@ -40,9 +40,9 @@ const getUserFromEmail = async (email) => {
 const updateUser = async (payload) => {
   const { _id, firstName, lastName, pictureUrl, bio, phone, email, password } = payload
   try {
-    
+
     const foundUser = await User.findOne({ _id: _id }).exec();
-    
+
     firstName ? foundBoard.firstName = firstName : '';
     lastName ? foundBoard.lastName = lastName : ''
     pictureUrl ? foundBoard.pictureUrl = pictureUrl : ''
@@ -60,24 +60,29 @@ const updateUser = async (payload) => {
   }
 }
 
+const verifyRoles = (idUser, document, targetedRoles) => {
+  const roles = ["admin", "editor", "viewer"]
+  if (targetedRoles.map(val => !roles.includes(val)).find(val => val === true))
+    throw new ApolloError('FORBIDDEN');
 
-// const verifyRoles = (...allowedRoles) => {
-  //   return (req, res, next) => {
-    //     if (!req?.roles) return res.sendStatus(401);
-//     const rolesArray = [...allowedRoles];
-//     const result = req.roles.map(role => rolesArray.includes(role)).find(val => val === true);
-//     if (!result) return res.sendStatus(401);
-//     next();
-//   }
-// }
+  let result;
+  document.members.map(async (_, index) => {
+    if (document.members[index]._id === idUser) {
+      result = targetedRoles.includes(document.members[index].role)
+    }
+  })
+
+  if (result) {
+    return result // bool - false if doesn't exist true if does
+  }
+  else {
+    throw new ApolloError('FORBIDDEN');
+  }
+}
 
 module.exports = {
   createUser,
   getUserFromEmail,
-  updateUser
-  // queryUsers,
-  // getUserById,
-  // updateUserById,
-  // verifyRoles,
-  // resetPassword,
+  updateUser,
+  verifyRoles,
 };
