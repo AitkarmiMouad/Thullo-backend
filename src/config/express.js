@@ -12,8 +12,10 @@ const credentials = require('../middlewares/credentials')
 const morgan = require('./morgan');
 const errorHandler = require('../middlewares/errorHandler');
 const { isDev } = require('./config');
-// const passport = require('passport');
-// const strategies = require('./passport');
+const authRoute = require("../routes/auth");
+const cookieSession = require("cookie-session");
+const passportSetup = require("./passport");
+const passport = require('passport');
 
 const app = express();
 
@@ -44,6 +46,13 @@ app.use(helmet({
   contentSecurityPolicy: !isDev,
 }));
 
+app.use(
+  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
 app.use(credentials);
@@ -51,51 +60,10 @@ app.use(credentials);
 app.use(cors(corsOptions));
 
 
-// enable authentication
-// app.use(passport.initialize());
-// passport.use('jwt', strategies.jwt);
-// passport.use('facebook', strategies.facebook);
-// passport.use('google', strategies.google);
-
+// auth route for sso with google/fb/github
+app.use("/auth", authRoute);
 
 // handle error
 app.use(errorHandler);
 
 module.exports = app;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// mount api v1 routes
-// app.use('/v1', routes);
-
-// send back a 404 error for any unknown api request
-// app.use((req, res, next) => {
-//   next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-// });
-
-// convert error to ApiError, if needed
-// app.use(errorConverter);
