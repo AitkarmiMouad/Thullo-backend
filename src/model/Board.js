@@ -28,6 +28,22 @@ const boardSchema = new Schema({
       _id: String,
     }],
   },
+  labels: {
+    type: [{
+      _id: {
+        type: String,
+        required: true
+      },
+      text: {
+        type: String,
+        required: true
+      },
+      color: {
+        type: String,
+        required: true
+      },
+    }],
+  },
   createdAt: {
     type: String,
     required: true

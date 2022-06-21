@@ -26,8 +26,7 @@ const generateRefreshToken = (user) => {
   return refreshToken;
 }
 
-// gonna return 0 if invalid or the fullName if valid
-// type must be access access or refresh
+// gonna return 0 if invalid or the email if valid
 const verifyToken = (req) => {
   if (!req.cookies.jwt) throw new ApolloError('FORBIDDEN')
   const token = req.cookies.jwt

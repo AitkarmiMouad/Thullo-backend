@@ -66,6 +66,7 @@ const verifyRoles = (idUser, document, targetedRoles) => {
     throw new ApolloError('FORBIDDEN');
 
   let result;
+  if (!document) throw new ApolloError('document not found');
   document.members.map(async (_, index) => {
     if (document.members[index]._id === idUser) {
       result = targetedRoles.includes(document.members[index].role)

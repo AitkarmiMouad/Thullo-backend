@@ -25,12 +25,18 @@ const cardSchema = new Schema({
   },
   labels: {
     type: [{
-      _id: String,
+      _id: {
+        type: String,
+        required: true
+      }
     }],
   },
   attachements: {
     type: [{
-      _id: String,
+      _id: {
+        type: String,
+        required: true
+      },
       attachementUrl: {
         type: String,
         required: true

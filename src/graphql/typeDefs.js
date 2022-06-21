@@ -8,6 +8,10 @@ const typeDefs = gql`
     # board queries
     allPublicBoards: [Board]
     getUserBoards: [Board]
+    # list queries
+    getList(idBoard: ID!): [List]
+    # card queries
+    getCard(idList: ID!): [Card]
   }
   type Mutation {
     # user operations
@@ -17,6 +21,14 @@ const typeDefs = gql`
     addBoard(input: AddBoardInput!): Board!
     updateBoard(input: updateBoardInput!): Board!
     deleteBoard(id: ID!): Boolean!
+    # list operations
+    addList(input: AddListInput!): List!
+    updateList(input: updateListInput!): List!
+    deleteList(input: deleteListInput!): Boolean!
+    # card operations
+    addCard(input: AddCardInput!): Card!
+    updateCard(input: updateCardInput!): Card!
+    deleteCard(input: deleteCardInput!): Boolean!
     # authentification operations
     login(input: LoginInput!): String!
     logout(input:Boolean): Boolean!
@@ -40,6 +52,7 @@ const typeDefs = gql`
     description: String,
     members: [Members!]!,
     list: [List],
+    labels: [Labels!],
     createdAt: String!,
   }
   type List{
@@ -54,9 +67,12 @@ const typeDefs = gql`
     members: [Members!]!,
     coverUrl: String,
     createdAt: String!,
-    labels: [Labels],
+    labels: [LabelsIds!],
     attachements: [Attachements],
     comments: [Comments]
+  }
+  type LabelsIds{
+    _id: ID!
   }
   type Labels{
     _id: ID!,
@@ -121,6 +137,20 @@ const typeDefs = gql`
     title: String!,
     cards: [CardInput!],
   }
+  input AddListInput{
+    idBoard: ID!,
+    title: String!,
+  }
+  input updateListInput{
+    _id: ID!,
+    idBoard: ID!,
+    title: String,
+    cards: [CardInput!],
+  }
+  input deleteListInput{
+    _id: ID!,
+    idBoard: ID!,
+  }
   input CardInput{
     _id: ID!,
     title: String!,
@@ -130,6 +160,28 @@ const typeDefs = gql`
     labels: [LabelsInput!],
     attachements: [AttachementsInput!],
     comments: [CommentsInput!]
+  }
+  input AddCardInput{
+    idBoard: ID!,
+    idList: ID!,
+    title: String!,
+  }
+  input updateCardInput{
+    _id: ID!,
+    idList: ID!,
+    idBoard: ID!,
+    title: String,
+    description: String,
+    members: [MembersInput!],
+    coverUrl: String,
+    labels: [LabelsInput!],
+    attachements: [AttachementsInput!],
+    comments: [CommentsInput!]
+  }
+  input deleteCardInput{
+    _id: ID!,
+    idBoard: ID!,
+    idList: ID!,
   }
   input LabelsInput{
     _id: ID!,
@@ -141,6 +193,7 @@ const typeDefs = gql`
     attachementUrl: String!,
     coverUrl: String,
     title: String,
+    createdAt: String,
   }
   input CommentsInput{
     _id: ID!,
